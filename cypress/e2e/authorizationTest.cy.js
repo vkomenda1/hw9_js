@@ -1,4 +1,6 @@
 import user from '../fixtures/user.json'
+import { login } from '../support/helper'
+import { faker } from '@faker-js/faker'
 
 it('Authorization', () => {
 
@@ -14,5 +16,13 @@ it('Authorization', () => {
     cy.get('button[type="submit"]').contains('Login').click();
 
     cy.get('.heading1', {timeout: 2000}).should('contain', user.firstName);
+
+})
+
+it.only('Authorization with invalid loginName', () => {
+
+    user.loginName = faker.animal.bear.name
+
+    login(user);
 
 })

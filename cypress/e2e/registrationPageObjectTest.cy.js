@@ -1,5 +1,9 @@
 import user from '../fixtures/user.json';
 import { faker } from '@faker-js/faker';
+import homePage from '../support/pages/HomePage';
+import loginPage from '../support/pages/LoginPage';
+import registrationPage from '../support/pages/RegistrationPage';
+import accountPage from '../support/pages/AccountPage';
 
 user.email = faker.internet.email({ provider: 'fakeMail.com'});
 user.loginName = faker.internet.userName();
@@ -14,31 +18,21 @@ user.postcode = faker.location.zipCode('####');
 describe('Succesfull registration', ()=>{
 
     it('Registration', () => {
-        cy.visit('/');
+        homePage.visit();
         
-        cy.get('.topnavbar [data-id="menu_account"]').click();
+        cy.log('Opening registration page...');
+        homePage.getHeaderAccountButton().click();    
+        loginPage.getRegisterAccountButton().click();
+
+        registrationPage.fillRegistrationFields(user);
+
+        cy.log('Submit registration form...');
+        registrationPage.getNewsLetterCheckbox().check();
+        registrationPage.getPrivacyPolicyCheckbox().check();
+        registrationPage.getSubmitRegistrationFormButton().click();
     
-        cy.get('#accountFrm button').click();
-        cy.get('#AccountFrm_firstname').type(user.firstName);
-        cy.get('#AccountFrm_lastname').type(user.lastName);
-        cy.get('#AccountFrm_email').type(user.email);
-        cy.get('#AccountFrm_telephone').type(user.phone);
-        cy.get('#AccountFrm_fax').type(user.fax);
-        cy.get('#AccountFrm_company').type(user.companyName);
-        cy.get('#AccountFrm_address_1').type(user.address1);
-        cy.get('#AccountFrm_address_2').type(user.address2);
-        cy.get('#AccountFrm_city').type(user.city);
-        cy.get('#AccountFrm_postcode').type(user.postcode);
-        cy.get('#AccountFrm_country_id').select(user.countryid);
-        cy.get('#AccountFrm_zone_id').select(user.zoneId);
-        cy.get('#AccountFrm_loginname').type(user.loginName);
-        cy.get('#AccountFrm_password').type(user.password);
-        cy.get('#AccountFrm_confirm').type(user.password);
-        cy.get('#AccountFrm_newsletter1').check();
-        cy.get('#AccountFrm_agree').check();
-        cy.get('button[title="Continue"]').click();
-    
-        cy.get('.heading1', {timeout: 2000}).should('contain', user.firstName);
+        cy.log('Verify first name displayed on account page...');
+        accountPage.getFirstNameText().should('contain', user.firstName);
     })
     
     it('Authorization', () => {
