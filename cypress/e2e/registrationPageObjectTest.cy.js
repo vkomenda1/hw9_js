@@ -1,65 +1,64 @@
-import user from '../fixtures/user.json';
-import { faker } from '@faker-js/faker';
-import homePage from '../support/pages/HomePage';
-import loginPage from '../support/pages/LoginPage';
-import registrationPage from '../support/pages/RegistrationPage';
-import accountPage from '../support/pages/AccountPage';
+import user from "../fixtures/user.json";
+import { base, faker } from "@faker-js/faker";
+import homePage from "../support/pages/HomePage";
+import loginPage from "../support/pages/LoginPage";
+import registrationPage from "../support/pages/RegistrationPage";
+import accountPage from "../support/pages/AccountPage";
 
-user.email = faker.internet.email({ provider: 'fakeMail.com'});
+user.email = faker.internet.email({ provider: "fakeMail.com" });
 user.loginName = faker.internet.userName();
 user.firstName = faker.person.firstName();
 user.lastName = faker.person.lastName();
 user.fax = faker.phone.number();
 user.phone = faker.phone.number();
 user.companyName = faker.company.name();
-user.postcode = faker.location.zipCode('####');
+user.postcode = faker.location.zipCode("####");
 
+let date;
+date = user.loginName;
 
-describe('Succesfull registration', ()=>{
+describe("Succesfull registration", () => {
+  it("Registration", () => {
+    homePage.visit();
 
-    it('Registration', () => {
-        homePage.visit();
-        
-        cy.log('Opening registration page...');
-        homePage.getHeaderAccountButton().click();    
-        loginPage.getRegisterAccountButton().click();
+    cy.log("Opening registration page...");
+    homePage.getHeaderAccountButton().click();
+    loginPage.getRegisterAccountButton().click();
 
-        registrationPage.fillRegistrationFields(user);
+    registrationPage.fillRegistrationFields(user);
 
-        cy.log('Submit registration form...');
-        registrationPage.getNewsLetterCheckbox().check();
-        registrationPage.getPrivacyPolicyCheckbox().check();
-        registrationPage.getSubmitRegistrationFormButton().click();
-    
-        cy.log('Verify first name displayed on account page...');
-        accountPage.getFirstNameText().should('contain', user.firstName);
-    })
-    
-    it('Authorization', () => {
-    
-        cy.log('Open website login page');
-        cy.visit('/index.php?rt=account/login');
-    
-        cy.log('Check user is unauthorized');
-        cy.getCookie('customer').should('be.null');
-    
-        cy.log('Authorize user');
-        cy.get('#loginFrm_loginname').type(user.loginName);
-        cy.get('#loginFrm_password').type(user.password);
-        cy.get('button[type="submit"]').contains('Login').click();
-    
-        cy.get('.heading1', {timeout: 2000}).should('contain', user.firstName);
-    })
-})
+    cy.log("Submit registration form...");
+    registrationPage.getNewsLetterCheckbox().check();
+    registrationPage.getPrivacyPolicyCheckbox().check();
+    registrationPage.getSubmitRegistrationFormButton().click();
 
+    cy.log("Verify first name displayed on account page...");
+    accountPage.getFirstNameText().should("contain", user.firstName);
+  });
+
+  it("Authorization", () => {
+    homePage.visit();
+    loginPage.visit();
+
+    loginPage.getCustomerCookie().should("be.null");
+
+    loginPage.fillAuthorizationFields(user);
+
+    cy.log("Submit Authorization form...");
+    loginPage.getSubmitAuthorizationFormButton().click();
+
+    cy.log("Verify first name displayed on account page...");
+    accountPage.getFirstNameText().should("contain", user.firstName);
+  });
+});
 
 // describe('Registration fields validation', ()=>{
 
 //     it('Registration without Firstname field', () => {
 //         cy.visit('/');
-    
+
 //         cy.get('.topnavbar [data-id="menu_account"]').click();
-    
+
 //         cy.get('#accountFrm button').click();
 //         //cy.get('#AccountFrm_firstname').type('First_Name_test');
 //         cy.get('#AccountFrm_lastname').type('Last_Name_test');
@@ -79,15 +78,15 @@ describe('Succesfull registration', ()=>{
 //         cy.get('#AccountFrm_newsletter1').check();
 //         cy.get('#AccountFrm_agree').check();
 //         cy.get('button[title="Continue"]').click();
-    
+
 //         cy.get('.heading1', {timeout: 2000}).should('contain', 'First_Name_test');
 //     })
 
 //     it('Registration without Firstname field', () => {
 //         cy.visit('/');
-    
+
 //         cy.get('.topnavbar [data-id="menu_account"]').click();
-    
+
 //         cy.get('#accountFrm button').click();
 //         //cy.get('#AccountFrm_firstname').type('First_Name_test');
 //         cy.get('#AccountFrm_lastname').type('Last_Name_test');
@@ -107,12 +106,11 @@ describe('Succesfull registration', ()=>{
 //         cy.get('#AccountFrm_newsletter1').check();
 //         cy.get('#AccountFrm_agree').check();
 //         cy.get('button[title="Continue"]').click();
-    
+
 //         cy.get('.heading1', {timeout: 2000}).should('contain', 'First_Name_test');
 //     })
 
 // })
-
 
 // const testData = []
 
@@ -130,7 +128,7 @@ describe('Succesfull registration', ()=>{
 //     testData.elemets.selectFields.forEach(({selector, data}) => {
 //         cy.get(selector).select(optionNumber);
 //     })
-    
+
 //     cy.get('#AccountFrm_newsletter1').check();
 //     cy.get('#AccountFrm_agree').check();
 //     cy.get('button[title="Continue"]').click();
