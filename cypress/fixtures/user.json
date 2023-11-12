@@ -1,7 +1,7 @@
 {
     "firstName": "First_Name_test",
     "lastName": "last_Name_test",
-    "email": "test111@testmail.com",
+    "email": "test1111@testmail.com",
     "phone": "0981115522",
     "fax": "380981115522",
     "companyName": "Qalight",
@@ -11,6 +11,6 @@
     "postcode": "00001",
     "countryid": "220",
     "zoneId": "3490",
-    "loginName": "sanita11",
+    "loginName": "wktest",
     "password": "123456"
 }
